@@ -226,7 +226,7 @@ const HomePage = () => {
                                 From Pantry to Cook <br /> Faster Than Ever
                             </h2>
                             <p className="text-muted-foreground mt-6 max-w-md mx-auto">
-                                Create delicious meals effortlessly with FreshKeeper's smart pantry management and recipe generator
+                                Create delicious meals effortlessly with our smart pantry management and recipe generator
                             </p>
                             <Button variant="white" className="mt-6" asChild>
                                 <Link href="/sign-in">
