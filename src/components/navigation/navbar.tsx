@@ -34,14 +34,14 @@ const Navbar = async () => {
                         </li>
                         <li className="hover:text-foreground/80 text-sm">
                         <Link href="#">
+                            Pantry
+                        </Link>
+                        </li>
+                        <li className="hover:text-foreground/80 text-sm">
+                        <Link href="#">
                             Pricing
                         </Link>
                         </li>
-                        {/* <li className="hover:text-foreground/80 text-sm">
-                        <Link href="#">
-                            Blog
-                        </Link>
-                        </li> */}
                     </ul>
                 </nav>
                 <div className="flex items-center gap-4">
