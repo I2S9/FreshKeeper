@@ -22,11 +22,6 @@ const Navbar = () => {
                     <ul className="flex items-center justify-center gap-8">
                         <li className="hover:text-foreground/80 text-sm">
                         <Link href="#">
-                            Pricing
-                        </Link>
-                        </li>
-                        <li className="hover:text-foreground/80 text-sm">
-                        <Link href="#">
                             About
                         </Link>
                         </li>
@@ -37,9 +32,14 @@ const Navbar = () => {
                         </li>
                         <li className="hover:text-foreground/80 text-sm">
                         <Link href="#">
-                            Blog
+                            Pricing
                         </Link>
                         </li>
+                        {/* <li className="hover:text-foreground/80 text-sm">
+                        <Link href="#">
+                            Blog
+                        </Link>
+                        </li> */}
                     </ul>
                 </nav>
                 <div className="flex items-center gap-4">
