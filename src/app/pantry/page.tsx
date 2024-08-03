@@ -7,15 +7,6 @@ const PantryPage = () => {
     { id: 1, name: 'Apples', quantity: 5, expiryDate: '2024-09-01' },
     { id: 2, name: 'Bananas', quantity: 3, expiryDate: '2024-08-15' },
     { id: 3, name: 'Carrots', quantity: 7, expiryDate: '2024-10-10' },
-    // Ajoutez plus d'éléments ici pour tester le défilement
-    { id: 4, name: 'Potatoes', quantity: 10, expiryDate: '2024-09-20' },
-    { id: 5, name: 'Tomatoes', quantity: 8, expiryDate: '2024-08-30' },
-    { id: 6, name: 'Lettuce', quantity: 4, expiryDate: '2024-09-15' },
-    { id: 7, name: 'Onions', quantity: 12, expiryDate: '2024-10-01' },
-    { id: 8, name: 'Garlic', quantity: 6, expiryDate: '2024-09-25' },
-    { id: 9, name: 'Peppers', quantity: 9, expiryDate: '2024-09-18' },
-    { id: 10, name: 'Cucumbers', quantity: 5, expiryDate: '2024-09-10' },
-    { id: 11, name: 'Radishes', quantity: 7, expiryDate: '2024-08-28' },
   ]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
