@@ -1,4 +1,6 @@
-# FreshKeeper: Keep Your Food Fresh, Keep Your Meals Inspired!
+# 🍴 FreshKeeper: Keep Your Food Fresh, Keep Your Meals Inspired!
+
+![alt text](FreshKeeperBanner.png)
 
 ## What it does
 
