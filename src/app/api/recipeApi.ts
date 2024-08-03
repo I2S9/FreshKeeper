@@ -10,13 +10,25 @@ interface Recipe {
 }
 
 export const fetchRecipes = async (ingredients: string[]): Promise<Recipe[]> => {
-  const url = `${BASE_URL}/findByIngredients?ingredients=${ingredients.join(',')}&number=5&apiKey=${API_KEY}`;
-
   try {
-    const response = await axios.get(url);
-    return response.data;
+      const response = await axios.get(BASE_URL, {
+          params: {
+              ingredients: ingredients.join(','),
+              number: 5,
+              apiKey: API_KEY,
+          },
+      });
+
+      console.log('API Response:', response.data);
+
+      return response.data.map((recipe: any) => ({
+          id: recipe.id,
+          title: recipe.title,
+          image: recipe.image,
+          sourceUrl: recipe.sourceUrl,
+      }));
   } catch (error) {
-    console.error('Error fetching recipes:', error);
-    return [];
+      console.error('Error fetching recipes:', error);
+      return [];
   }
 };

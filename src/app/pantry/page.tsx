@@ -51,192 +51,191 @@ const PantryPage = () => {
     'water', 'mineral water', 'sparkling water', 'cola', 'diet cola', 'lemon-lime soda', 'root beer', 'ginger ale', 'tonic water', 'club soda', 'orange juice', 'apple juice', 'cranberry juice', 'grapefruit juice', 'lemonade', 'limeade', 'iced tea', 'sweet tea', 'green tea', 'black tea', 'chai tea', 'coffee', 'espresso', 'latte', 'cappuccino', 'hot chocolate', 'milkshake', 'smoothie', 'beer', 'cider', 'wine', 'champagne', 'vodka', 'gin', 'rum', 'tequila', 'whiskey', 'brandy', 'liqueur', 'cocktail'
   ];
 
-
   const handleAddItem = () => {
     const existingItem = items.find(item => item.name.toLowerCase() === newItemName.toLowerCase());
     if (existingItem) {
-      const updatedItems = items.map(item => 
-        item.id === existingItem.id 
-          ? { ...item, quantity: item.quantity + newItemQuantity } 
-          : item
-      );
-      setItems(updatedItems);
+        const updatedItems = items.map(item =>
+            item.id === existingItem.id
+                ? { ...item, quantity: item.quantity + newItemQuantity }
+                : item
+        );
+        setItems(updatedItems);
     } else {
-      const newItem = {
-        id: items.length + 1,
-        name: newItemName,
-        quantity: newItemQuantity,
-        expiryDate: newItemExpiryDate,
-      };
-      setItems([...items, newItem]);
+        const newItem = {
+            id: items.length + 1,
+            name: newItemName,
+            quantity: newItemQuantity,
+            expiryDate: newItemExpiryDate,
+        };
+        setItems([...items, newItem]);
     }
     setShowAddForm(false);
     setNewItemName('');
     setNewItemQuantity(1);
     setNewItemExpiryDate('');
-  };
+};
 
-  const handleDeleteItem = (id: number) => {
-    const updatedItems = items.map(item => 
-      item.id === id 
-        ? { ...item, quantity: item.quantity - 1 } 
-        : item
+const handleDeleteItem = (id: number) => {
+    const updatedItems = items.map(item =>
+        item.id === id
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
     ).filter(item => item.quantity > 0);
     setItems(updatedItems);
-  };
+};
 
-  const handleIncreaseQuantity = (id: number) => {
+const handleIncreaseQuantity = (id: number) => {
     const updatedItems = items.map(item =>
-      item.id === id 
-        ? { ...item, quantity: item.quantity + 1 } 
-        : item
+        item.id === id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
     );
     setItems(updatedItems);
-  };
+};
 
-  const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      const existingItem = items.find(item => item.name.toLowerCase() === searchTerm.toLowerCase());
-      if (!existingItem && existingItems.includes(searchTerm.toLowerCase())) {
-        setNewItemName(searchTerm);
-        setShowAddForm(true);
-      } else {
-        alert("The item does not exist or is misspelled.");
-      }
+        const existingItem = items.find(item => item.name.toLowerCase() === searchTerm.toLowerCase());
+        if (!existingItem && existingItems.includes(searchTerm.toLowerCase())) {
+            setNewItemName(searchTerm);
+            setShowAddForm(true);
+        } else {
+            alert("The item does not exist or is misspelled.");
+        }
     }
-  };
+};
 
-  const filteredItems = items.filter(item =>
+const filteredItems = items.filter(item =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+);
 
-  const today = new Date().toISOString().split('T')[0];
-  const router = useRouter();
+const today = new Date().toISOString().split('T')[0];
+const router = useRouter();
 
-  const generateRecipes = async () => {
+const generateRecipes = async () => {
     const ingredients = items.map(item => item.name);
     const fetchedRecipes = await fetchRecipes(ingredients);
-    console.log('Fetched Recipes:', fetchedRecipes); 
-    setRecipes(fetchedRecipes);
-  };
+    console.log('Fetched Recipes:', fetchedRecipes);
+    //setRecipes(fetchedRecipes);
+};
 
-  return (
+return (
     <div className="container mx-auto py-12">
-      <Button
-        onClick={() => router.push('/')} 
-        className="absolute top-4 left-4"
-      >
-        Home
-      </Button>
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-6">Welcome to the Pantry</h1>
-        <p className="text-lg mb-4">This is the Pantry page. Here you can manage and view your pantry items.</p>
-      </div>
-      <div className="flex justify-center flex-col gap-12">
-        <div className="bg-gray-800 text-white rounded-lg p-8">
-          <Input
-            placeholder="Search items..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyPress={handleSearchKeyPress}
-            className="mb-6"
-          />
-          {showAddForm && (
-            <div className="border rounded-lg bg-gray-800 p-6 mb-12">
-              <h2 className="text-2xl font-semibold mb-6">Add New Item</h2>
-              <Input
-                placeholder="Item Name"
-                value={newItemName}
-                onChange={(e) => setNewItemName(e.target.value)}
-                disabled
-                className="mb-4"
-              />
-              <Input
-                type="number"
-                placeholder="Quantity"
-                value={newItemQuantity}
-                onChange={(e) => setNewItemQuantity(Number(e.target.value))}
-                className="mb-4"
-              />
-              <Input
-                type="date"
-                placeholder="Expiry Date"
-                value={newItemExpiryDate}
-                onChange={(e) => {
-                  if (e.target.value >= today) {
-                    setNewItemExpiryDate(e.target.value);
-                  } else {
-                    alert("Expiry date cannot be in the past.");
-                  }
-                }}
-                min={today}
-                className="mb-6"
-              />
-              <Button
-                onClick={handleAddItem}
-                className="bg-blue-600"
-              >
-                Add Item
-              </Button>
-            </div>
-          )}
-          <div className="max-h-[600px] overflow-y-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredItems.map((item) => (
-                <div key={item.id} className="border p-6 rounded-lg bg-gray-800 text-white">
-                  <h2 className="text-2xl font-semibold mb-2">{item.name}</h2>
-                  <p className="text-lg mb-2">Quantity: {item.quantity}</p>
-                  <p className="text-lg mb-4">Expiry Date: {item.expiryDate}</p>
-                  <div className="flex justify-between mt-4">
-                    <Button
-                      onClick={() => handleDeleteItem(item.id)}
-                      className="bg-red-500"
-                    >
-                      Decrease Quantity
-                    </Button>
-                    <Button
-                      onClick={() => handleIncreaseQuantity(item.id)}
-                      className="bg-blue-500"
-                    >
-                      Increase Quantity
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex justify-center mt-12">
-            <Button
-              className="bg-blue-600"
-              onClick={generateRecipes} 
-            >
-              Generate a Recipe
-            </Button>
-          </div>
-          {recipes.length > 0 && (
-            <div className="mt-12">
-              <h2 className="text-2xl font-bold mb-6">Recipes</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {recipes.map((recipe) => (
-                  <div key={recipe.id} className="border p-6 rounded-lg bg-gray-800 text-white">
-                    <h3 className="text-xl font-semibold mb-2">{recipe.title}</h3>
-                    <a
-                      href={recipe.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 underline"
-                    >
-                      View Recipe
-                    </a>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+        <Button
+            onClick={() => router.push('/')}
+            className="absolute top-4 left-4"
+        >
+            Home
+        </Button>
+        <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold mb-6">Welcome to the Pantry</h1>
+            <p className="text-lg mb-4">This is the Pantry page. Here you can manage and view your pantry items.</p>
         </div>
-      </div>
+        <div className="flex justify-center flex-col gap-12">
+            <div className="bg-gray-800 text-white rounded-lg p-8">
+                <Input
+                    placeholder="Search items..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyPress={handleSearchKeyPress}
+                    className="mb-6"
+                />
+                {showAddForm && (
+                    <div className="border rounded-lg bg-gray-800 p-6 mb-12">
+                        <h2 className="text-2xl font-semibold mb-6">Add New Item</h2>
+                        <Input
+                            placeholder="Item Name"
+                            value={newItemName}
+                            onChange={(e) => setNewItemName(e.target.value)}
+                            disabled
+                            className="mb-4"
+                        />
+                        <Input
+                            type="number"
+                            placeholder="Quantity"
+                            value={newItemQuantity}
+                            onChange={(e) => setNewItemQuantity(Number(e.target.value))}
+                            className="mb-4"
+                        />
+                        <Input
+                            type="date"
+                            placeholder="Expiry Date"
+                            value={newItemExpiryDate}
+                            onChange={(e) => {
+                                if (e.target.value >= today) {
+                                    setNewItemExpiryDate(e.target.value);
+                                } else {
+                                    alert("Expiry date cannot be in the past.");
+                                }
+                            }}
+                            min={today}
+                            className="mb-6"
+                        />
+                        <Button
+                            onClick={handleAddItem}
+                            className="bg-blue-600"
+                        >
+                            Add Item
+                        </Button>
+                    </div>
+                )}
+                <div className="max-h-[600px] overflow-y-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {filteredItems.map((item) => (
+                            <div key={item.id} className="border p-6 rounded-lg bg-gray-800 text-white">
+                                <h2 className="text-2xl font-semibold mb-2">{item.name}</h2>
+                                <p className="text-lg mb-2">Quantity: {item.quantity}</p>
+                                <p className="text-lg mb-4">Expiry Date: {item.expiryDate}</p>
+                                <div className="flex justify-between mt-4">
+                                    <Button
+                                        onClick={() => handleDeleteItem(item.id)}
+                                        className="bg-red-500"
+                                    >
+                                        Decrease Quantity
+                                    </Button>
+                                    <Button
+                                        onClick={() => handleIncreaseQuantity(item.id)}
+                                        className="bg-blue-500"
+                                    >
+                                        Increase Quantity
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="flex justify-center mt-12">
+                    <Button
+                        className="bg-blue-600"
+                        onClick={generateRecipes}
+                    >
+                        Generate a Recipe
+                    </Button>
+                </div>
+                {recipes.length > 0 && (
+                    <div className="mt-12">
+                        <h2 className="text-2xl font-bold mb-6">Recipes</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {/* {recipes.map((recipe) => (
+                                <div key={recipe.id} className="border p-6 rounded-lg bg-gray-800 text-white">
+                                    <h3 className="text-xl font-semibold mb-2">{recipe.title}</h3>
+                                    <a
+                                        //href={recipe.sourceUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-400 underline"
+                                    >
+                                        View Recipe
+                                    </a>
+                                </div>
+                            ))} */}
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
     </div>
-  );
+);
 };
 
 export default PantryPage;
