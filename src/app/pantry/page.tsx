@@ -1,18 +1,25 @@
 "use client";
-
 import React, { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useRouter } from 'next/navigation'; 
+import { fetchRecipes } from "../api/recipeApi";
 
 const PantryPage = () => {
-  const [items, setItems] = useState([
-    { id: 1, name: 'Apples', quantity: 5, expiryDate: '2024-09-01' },
-    { id: 2, name: 'Bananas', quantity: 3, expiryDate: '2024-08-15' },
-    { id: 3, name: 'Carrots', quantity: 7, expiryDate: '2024-10-10' },
-  ]);
+    const [items, setItems] = useState([
+      { id: 1, name: 'Apples', quantity: 5, expiryDate: '2024-09-01' },
+      { id: 2, name: 'Bananas', quantity: 3, expiryDate: '2024-08-15' },
+      { id: 3, name: 'Carrots', quantity: 7, expiryDate: '2024-10-10' },
+      { id: 4, name: 'Potatoes', quantity: 10, expiryDate: '2024-11-01' },
+      { id: 5, name: 'Tomatoes', quantity: 8, expiryDate: '2024-12-01' },
+      { id: 6, name: 'Onions', quantity: 6, expiryDate: '2024-09-15' },
+    ]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [newItemName, setNewItemName] = useState('');
   const [newItemQuantity, setNewItemQuantity] = useState(1);
   const [newItemExpiryDate, setNewItemExpiryDate] = useState('');
+  const [recipes, setRecipes] = useState([]);
 
 
   const existingItems = [
@@ -43,6 +50,8 @@ const PantryPage = () => {
     // Beverages
     'water', 'mineral water', 'sparkling water', 'cola', 'diet cola', 'lemon-lime soda', 'root beer', 'ginger ale', 'tonic water', 'club soda', 'orange juice', 'apple juice', 'cranberry juice', 'grapefruit juice', 'lemonade', 'limeade', 'iced tea', 'sweet tea', 'green tea', 'black tea', 'chai tea', 'coffee', 'espresso', 'latte', 'cappuccino', 'hot chocolate', 'milkshake', 'smoothie', 'beer', 'cider', 'wine', 'champagne', 'vodka', 'gin', 'rum', 'tequila', 'whiskey', 'brandy', 'liqueur', 'cocktail'
   ];
+
+
   const handleAddItem = () => {
     const existingItem = items.find(item => item.name.toLowerCase() === newItemName.toLowerCase());
     if (existingItem) {
@@ -101,103 +110,129 @@ const PantryPage = () => {
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Get today's date in yyyy-mm-dd format
   const today = new Date().toISOString().split('T')[0];
+  const router = useRouter();
+
+  const generateRecipes = async () => {
+    const ingredients = items.map(item => item.name);
+    const fetchedRecipes = await fetchRecipes(ingredients);
+    console.log('Fetched Recipes:', fetchedRecipes); 
+    setRecipes(fetchedRecipes);
+  };
 
   return (
-    <div className="container mx-auto py-8">
-      <button
-        onClick={() => window.location.href = '/'} // Redirige vers la page d'accueil
-        className="absolute top-4 left-4 text-white p-2"
+    <div className="container mx-auto py-12">
+      <Button
+        onClick={() => router.push('/')} 
+        className="absolute top-4 left-4"
       >
         Home
-      </button>
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-4 text-white">Welcome to the Pantry</h1>
-        <p className="text-lg text-white">
-          This is the Pantry page. Here you can manage and view your pantry items.
-        </p>
+      </Button>
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold mb-6">Welcome to the Pantry</h1>
+        <p className="text-lg mb-4">This is the Pantry page. Here you can manage and view your pantry items.</p>
       </div>
-      <div className="flex justify-center">
-        <div className="w-full max-w-6xl bg-[#35393F] text-white rounded-lg p-8">
-          <input
-            type="text"
+      <div className="flex justify-center flex-col gap-12">
+        <div className="bg-gray-800 text-white rounded-lg p-8">
+          <Input
             placeholder="Search items..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyPress={handleSearchKeyPress}
-            className="w-full p-2 mb-8 border rounded-lg bg-white text-black"
-            style={{ backgroundColor: '#35393F', color: '#FFFFFF' }}
+            className="mb-6"
           />
           {showAddForm && (
-            <div className="mb-8 border rounded-lg bg-[#35393F] p-4">
-              <h2 className="text-2xl font-semibold mb-4">Add New Item</h2>
-              <input
-                type="text"
+            <div className="border rounded-lg bg-gray-800 p-6 mb-12">
+              <h2 className="text-2xl font-semibold mb-6">Add New Item</h2>
+              <Input
                 placeholder="Item Name"
                 value={newItemName}
                 onChange={(e) => setNewItemName(e.target.value)}
-                className="w-full p-2 mb-4 border rounded-lg bg-[#35393F] text-white"
                 disabled
+                className="mb-4"
               />
-              <input
+              <Input
                 type="number"
                 placeholder="Quantity"
                 value={newItemQuantity}
                 onChange={(e) => setNewItemQuantity(Number(e.target.value))}
-                className="w-full p-2 mb-4 border rounded-lg bg-[#35393F] text-white"
+                className="mb-4"
               />
-              <input
+              <Input
                 type="date"
                 placeholder="Expiry Date"
                 value={newItemExpiryDate}
                 onChange={(e) => {
-                  // Validate expiry date
                   if (e.target.value >= today) {
                     setNewItemExpiryDate(e.target.value);
                   } else {
                     alert("Expiry date cannot be in the past.");
                   }
                 }}
-                min={today} // Set the minimum date to today
-                className="w-full p-2 mb-4 border rounded-lg bg-[#35393F] text-white"
+                min={today}
+                className="mb-6"
               />
-              <button
+              <Button
                 onClick={handleAddItem}
-                className="bg-[#004BE0] text-white p-2 rounded-lg"
+                className="bg-blue-600"
               >
                 Add Item
-              </button>
+              </Button>
             </div>
           )}
-          <div className="max-h-[500px] overflow-y-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="max-h-[600px] overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredItems.map((item) => (
-                <div key={item.id} className="border p-4 rounded-lg shadow-sm bg-[#35393F] text-white">
-                  <h2 className="text-2xl font-semibold">{item.name}</h2>
-                  <p className="text-lg">Quantity: {item.quantity}</p>
-                  <p className="text-lg">Expiry Date: {item.expiryDate}</p>
-                  <div className="flex justify-between mt-2">
-                    <button
+                <div key={item.id} className="border p-6 rounded-lg bg-gray-800 text-white">
+                  <h2 className="text-2xl font-semibold mb-2">{item.name}</h2>
+                  <p className="text-lg mb-2">Quantity: {item.quantity}</p>
+                  <p className="text-lg mb-4">Expiry Date: {item.expiryDate}</p>
+                  <div className="flex justify-between mt-4">
+                    <Button
                       onClick={() => handleDeleteItem(item.id)}
-                      className="bg-red-500 text-white p-2 rounded-lg"
+                      className="bg-red-500"
                     >
                       Decrease Quantity
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={() => handleIncreaseQuantity(item.id)}
-                      className="bg-blue-500 text-white p-2 rounded-lg"
+                      className="bg-blue-500"
                     >
                       Increase Quantity
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}
             </div>
           </div>
           <div className="flex justify-center mt-12">
-            <button className="bg-[#004BE0] text-white p-4 rounded-lg">Generate a Recipe</button>
+            <Button
+              className="bg-blue-600"
+              onClick={generateRecipes} 
+            >
+              Generate a Recipe
+            </Button>
           </div>
+          {recipes.length > 0 && (
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold mb-6">Recipes</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {recipes.map((recipe) => (
+                  <div key={recipe.id} className="border p-6 rounded-lg bg-gray-800 text-white">
+                    <h3 className="text-xl font-semibold mb-2">{recipe.title}</h3>
+                    <a
+                      href={recipe.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 underline"
+                    >
+                      View Recipe
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
