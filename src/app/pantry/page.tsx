@@ -5,6 +5,14 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from 'next/navigation'; 
 import { fetchRecipes } from "../api/recipeApi";
 
+//NEW
+
+interface Recipe {
+    id: number;
+    title: string;
+    sourceUrl: string;
+}
+
 const PantryPage = () => {
     const [items, setItems] = useState([
       { id: 1, name: 'Apples', quantity: 5, expiryDate: '2024-09-01' },
@@ -19,8 +27,8 @@ const PantryPage = () => {
   const [newItemName, setNewItemName] = useState('');
   const [newItemQuantity, setNewItemQuantity] = useState(1);
   const [newItemExpiryDate, setNewItemExpiryDate] = useState('');
-  const [recipes, setRecipes] = useState([]);
-
+  //const [recipes, setRecipes] = useState([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]); //NEW
 
   const existingItems = [
     // Fruits
